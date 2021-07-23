@@ -12,12 +12,15 @@ import RealmSwift
 class Contacts: Object{
     
     @objc dynamic var phoneNumber:String = ""
+    @objc dynamic var name:String = ""
 }
 
 class PersistanceContact {
     
     
     var arrayPhone = [Contacts().phoneNumber]
+    var arrayName = [Contacts().name]
+    
     
     var allData: Results<Contacts> {
         let realm = try! Realm()
@@ -27,9 +30,10 @@ class PersistanceContact {
     
     let realm = try! Realm()
 
-    func addRealm(addName:String) {
+    func addRealm(addNumber:String, addName: String) {
         let add = Contacts()
-        add.phoneNumber = addName
+        add.name = addName
+        add.phoneNumber = addNumber
 
         try! realm.write{
             realm.add(add)
@@ -39,11 +43,13 @@ class PersistanceContact {
     func loadRealm() {
         
         arrayPhone = []
+        arrayName = []
 
         let allRealm = realm.objects(Contacts.self)
     
         for note in allRealm {
             arrayPhone.append(note.phoneNumber)
+            arrayName.append(note.name)
         }
     }
         

@@ -8,39 +8,42 @@
 import UIKit
 
 class TableViewController: UITableViewController {
-        
+    
+  
     var persistance = PersistanceContact()
  
     @IBAction func addButtom(_ sender: Any) {
 
-        let alertController = UIAlertController(title: "Add phone number ", message: nil, preferredStyle: .alert)
-        
-        alertController.addTextField { textField in
+        let alertPhoneController = UIAlertController(title: "Add phone number ", message: nil, preferredStyle: .alert)
+        alertPhoneController.addTextField { textField in
+            textField.placeholder = "New name"
+        }
+        alertPhoneController.addTextField { textField in
             textField.placeholder = "New phone number"
         }
         
         let alertAction1 = UIAlertAction(title: "Cancel", style: .default) { (alert) in
-        
         }
         
         let alertAction2 = UIAlertAction(title: "Add", style: .cancel) { (alert) in
         
-            let newItem = alertController.textFields![0].text
+            let number = alertPhoneController.textFields![1].text
+            let name = alertPhoneController.textFields![0].text
             
-            if newItem == "" {
+            if number == "" || name == ""{
                 
             }
             else {
-                self.persistance.addRealm(addName: newItem!)
+                self.persistance.addRealm(addNumber: number!, addName: name!)
             }
             
             self.persistance.loadRealm()
             self.tableView.reloadData()
         }
         
-        alertController.addAction(alertAction1)
-        alertController.addAction(alertAction2)
-        present(alertController, animated: true, completion: nil)
+        alertPhoneController.addAction(alertAction1)
+        alertPhoneController.addAction(alertAction2)
+        present(alertPhoneController, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -53,10 +56,11 @@ class TableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "book", for: indexPath)
-
-        cell.textLabel?.text = persistance.allData[indexPath.row].phoneNumber
+        let cell = tableView.dequeueReusableCell(withIdentifier: "book", for: indexPath) as! TableViewCell
         
+        cell.nameLabel.text = persistance.allData[indexPath.row].name
+        cell.phoneLabel.text = persistance.allData[indexPath.row].phoneNumber
+                
         return cell
     }
 
@@ -83,14 +87,8 @@ class TableViewController: UITableViewController {
         }
     }
     
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         tableView.deselectRow(at: indexPath, animated: true)
-
-        
-        callNumber(number: persistance.arrayPhone[indexPath.row])
-        
-        
+        callNumber(number: persistance.allData[indexPath.row].phoneNumber)
     }
 }
